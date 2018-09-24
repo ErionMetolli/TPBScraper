@@ -42,7 +42,6 @@ class Scraper:
             self.log('Current URL: ' + self.url + str(count))
             try:
                 res = request.urlopen(req)
-
                 html = res.read().decode('UTF-8')
                 self.log('Fetched HTML.')
 
@@ -93,5 +92,9 @@ class Scraper:
                     json.dump(data, outfile)
             except HTTPError:
                 self.log('URL not found: ' + self.url + str(count))
+            except Exception as e:
+                self.log('An unknown error occurred.')
+                self.log(e.message)
+                continue
             count += 1
         self.scraping = False

@@ -13,7 +13,7 @@ def main():
     url = config['Scrape']['Url']
 
     scraper = Scraper(url, db_host, db_port, db_name, db_collection)
-    scraper.start(510)
+    scraper.start(1600)
 
 if __name__ == '__main__':
     main()
