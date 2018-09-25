@@ -14,7 +14,9 @@ def main():
     url = config['Scrape']['Url']
 
     scraper = Scraper(url)
-    scraper.start(1600)
+    # 3211594
+    scraper.start(3211594)
+
 
 if __name__ == '__main__':
     main()
