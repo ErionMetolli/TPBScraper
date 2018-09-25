@@ -31,7 +31,7 @@ from logger import Logger
 class Del:
 
     def __init__(self, keep=string.digits):
-        self.comp = dict((ord(c),c) for c in keep)
+        self.comp = dict((ord(c), c) for c in keep)
 
     def __getitem__(self, k):
         return self.comp.get(k)
@@ -44,7 +44,7 @@ class Scraper:
         self.url = url
         self.log = Logger(type(self).__name__).log
         self.DD = Del()
-    
+
     def start(self, s):
         self.log('Starting scraping.')
         self.scraping = True
@@ -56,6 +56,9 @@ class Scraper:
                 res = request.urlopen(req)
                 html = res.read().decode('UTF-8')
                 self.log('Fetched HTML.')
+
+                with open('last.txt', 'w') as f:
+                    f.write(html)
 
                 magnet = html.split('href="magnet:?xt=urn:btih:')[1][:40]
 
@@ -72,7 +75,7 @@ class Scraper:
 
                 comments = html.split('<dd><span id=\'NumComments\'>')[1][:10]
                 comments = comments.translate(self.DD)
-                
+
                 name = html.split('<title>', 1)[1].split('</title>', 1)[0]
 
                 author = html.split('/" title="Browse ')[1].split('">', 1)[0]
@@ -86,20 +89,20 @@ class Scraper:
                 description = html.split('<div class="nfo">')[1].split('<div class="download">')[0]
 
                 data = {
-                        'id': str(count),
-                        'category': str(category),
-                        'size': str(size),
-                        'author': str(author),
-                        'name': str(name),
-                        'url': str(self.url + str(count)),
-                        'comments': int(comments),
-                        'leechers': int(leechers),
-                        'seeders': int(seeders),
-                        'uploaded': str(uploaded_date),
-                        'files': int(files_count),
-                        'magnet_link': "magnet:?xt=urn:btih:" + str(magnet),
-                        'description': str(description)
-                        }
+                    'id': str(count),
+                    'category': str(category),
+                    'size': str(size),
+                    'author': str(author),
+                    'name': str(name),
+                    'url': str(self.url + str(count)),
+                    'comments': int(comments),
+                    'leechers': int(leechers),
+                    'seeders': int(seeders),
+                    'uploaded': str(uploaded_date),
+                    'files': int(files_count),
+                    'magnet_link': "magnet:?xt=urn:btih:" + str(magnet),
+                    'description': str(description)
+                }
                 with open('data.json', 'w') as outfile:
                     json.dump(data, outfile)
             except HTTPError:
