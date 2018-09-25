@@ -2,6 +2,7 @@
 from scraper import Scraper
 from configparser import ConfigParser
 
+
 def main():
     config = ConfigParser()
     config.read('config')
@@ -12,7 +13,7 @@ def main():
 
     url = config['Scrape']['Url']
 
-    scraper = Scraper(url, db_host, db_port, db_name, db_collection)
+    scraper = Scraper(url)
     scraper.start(1600)
 
 if __name__ == '__main__':
