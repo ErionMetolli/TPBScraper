@@ -57,8 +57,8 @@ class Scraper:
                 html = res.read().decode('UTF-8')
                 self.log('Fetched HTML.')
 
-                with open('last.txt', 'w') as f:
-                    f.write(html)
+                with open('last.txt', 'w') as file:
+                    file.write(html)
 
                 magnet = html.split('href="magnet:?xt=urn:btih:')[1][:40]
 
@@ -107,14 +107,15 @@ class Scraper:
                     'magnet_link': "magnet:?xt=urn:btih:" + str(magnet),
                     'description': str(description)
                 }
-                with open('data.json', 'w') as outfile:
+                with open('data.json', 'a') as outfile:
                     json.dump(data, outfile)
+                    outfile.write('\n')
                 self.log('Saved all data successfully.')
             except HTTPError:
                 self.log('URL not found: ' + self.url + str(count))
-            except Exception as e:
+            except Exception as exc:
                 self.log('An unknown error occurred.')
-                self.log(str(e))
+                self.log(str(exc))
                 continue
             count += 1
         # self.scraping = False
