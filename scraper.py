@@ -60,7 +60,11 @@ class Scraper:
                 with open('last.txt', 'w') as file:
                     file.write(html)
 
-                magnet = html.split('href="magnet:?xt=urn:btih:')[1][:40]
+                magnet = 'magnet:?xt=urn:btih:' \
+                              + html.split('href="magnet:?xt=urn:btih:')[1][:40]
+
+                full_magnet = 'magnet:?xt=urn:btih:' \
+                              + html.split('href="magnet:?xt=urn:btih:')[1].split('" title=', 1)[0]
 
                 files_count = 0
                 try:
@@ -104,7 +108,8 @@ class Scraper:
                     'seeders': int(seeders),
                     'uploaded': str(uploaded_date),
                     'files': int(files_count),
-                    'magnet_link': "magnet:?xt=urn:btih:" + str(magnet),
+                    'magnet_link': str(magnet),
+                    'full_magnet_link': str(full_magnet),
                     'description': str(description)
                 }
                 with open('data.json', 'a') as outfile:
