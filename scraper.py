@@ -62,8 +62,12 @@ class Scraper:
 
                 magnet = html.split('href="magnet:?xt=urn:btih:')[1][:40]
 
-                files_count = html.split('}); filelist = ')[1][:10]
-                files_count = files_count.translate(self.DD)
+                files_count = 0
+                try:
+                    files_count = html.split('}); filelist = ')[1][:10]
+                    files_count = files_count.translate(self.DD)
+                except IndexError:
+                    pass
 
                 uploaded_date = '20' + html.split('<dd>20')[1][:21]
 
@@ -105,6 +109,7 @@ class Scraper:
                 }
                 with open('data.json', 'w') as outfile:
                     json.dump(data, outfile)
+                self.log('Saved all data successfully.')
             except HTTPError:
                 self.log('URL not found: ' + self.url + str(count))
             except Exception as e:
