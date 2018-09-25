@@ -2,33 +2,45 @@ import string
 import json
 import socks
 import socket
-from pprint import pprint
 
+
+# Used to change urllib requests to SOCKS otherwise we cannot access .onion sites
 def create_connection_fixed_dns_leak(address, timeout=None, source_address=None):
     sock = socks.socksocket()
     sock.connect(address)
     return sock
 
-socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", 9050)
-socket.socket = socks.socksocket
-socket.create_connection = create_connection_fixed_dns_leak
+
+try:
+    socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", 9050)
+    socket.socket = socks.socksocket
+    socket.create_connection = create_connection_fixed_dns_leak
+except Exception as e:
+    print('An unknown error occurred')
+    print(str(e))
+    with open('log.txt', 'w') as f:
+        f.write('An unknown error occurred')
+        f.write(str(e))
 
 from urllib import request
 from urllib.error import HTTPError
 
 from logger import Logger
-from database  import Database
+
 
 class Del:
+
     def __init__(self, keep=string.digits):
         self.comp = dict((ord(c),c) for c in keep)
+
     def __getitem__(self, k):
         return self.comp.get(k)
+
 
 class Scraper:
     scraping = False
 
-    def __init__(self, url, host, port, db_name, db_collection):
+    def __init__(self, url):
         self.url = url
         self.log = Logger(type(self).__name__).log
         self.DD = Del()
@@ -94,7 +106,7 @@ class Scraper:
                 self.log('URL not found: ' + self.url + str(count))
             except Exception as e:
                 self.log('An unknown error occurred.')
-                self.log(e.message)
+                self.log(str(e))
                 continue
             count += 1
-        self.scraping = False
+        # self.scraping = False
