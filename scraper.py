@@ -60,8 +60,7 @@ class Scraper:
                 with open('last.txt', 'w') as file:
                     file.write(html)
 
-                magnet = 'magnet:?xt=urn:btih:' \
-                              + html.split('href="magnet:?xt=urn:btih:')[1].split('" title=', 1)[0]
+                magnet = 'magnet:?xt=urn:btih:' + html.split('href="magnet:?xt=urn:btih:')[1].split('" title=', 1)[0]
 
                 files_count = 0
                 try:
