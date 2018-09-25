@@ -30,6 +30,7 @@ class Database:
             for line in lines:
                 current = json.loads(line)
                 self.collection.insert_one(current)
+                self.log('Successfully added to database record with id ' + str(current['id']))
 
     def connect(self):
         return MongoClient(('mongodb://%s:%s@' + self.host) % (self.username, self.password))
