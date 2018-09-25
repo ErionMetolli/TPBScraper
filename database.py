@@ -1,27 +1,35 @@
+import json
 from logger import Logger
 from pymongo import MongoClient
+from configparser import ConfigParser
+
 
 class Database:
-    def __init__(self, url, port, db_name, coll_name):
-        self.url = url
+    def __init__(self, host, port, db_username, db_password, db_name, coll_name):
+        self.host = host
         self.port = port
+        self.username = db_username
+        self.password = db_password
         self.db_name = db_name
         self.coll_name = coll_name
         self.connection = self.connect()
         self.log = Logger(type(self).__name__).log
 
-    def get_collection(self):
-        last_id = 0
-        collection = self.connection[self.db_name][self.coll_name]
-        if self.db_name in self.connection.database_names():
-            self.log('Database exists.')
-            if self.coll_name in db.collection_names():
-                self.log('Collection exists, getting last id.')
-            else:
-                self.log('Collection doesn\'t exist but database does, last_id is staying 0.')
-        else:
-            self.log('Database doesn\'t exist, last_id is staying 0.')
-        return (collection, last_id)
+        self.db = self.connection[db_name]
+        self.collection = self.db[coll_name]
+
+    def export_data(self):
+        config = ConfigParser()
+        config.read('config')
+        data_file = config['Export']['DataFile']
+        lines = None
+        with open(data_file, 'r') as df:
+            lines = df.readlines()
+
+        if lines:
+            for line in lines:
+                current = json.loads(line)
+                self.collection.insert_one(current)
 
     def connect(self):
-        return MongoClient(self.url, self.port)
+        return MongoClient(('mongodb://%s:%s@' + self.host) % (self.username, self.password))

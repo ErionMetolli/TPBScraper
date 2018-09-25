@@ -1,7 +1,11 @@
 [Database]
 Host = 127.0.0.1
 Port = 27017
+Username = username
+Password = password
 Name = tpb
 Collection = articles
 [Scrape]
 Url = http://uj3wazyk5u4hnvtk.onion/torrent/
+[Export]
+DataFile = data.json
